@@ -1,20 +1,18 @@
+using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using System.IO;
-using System.Web;
 using System.Linq;
-using System.Net;
 using System.Text;
-using Newtonsoft.Json;
-using RestSharp;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace DocRaptor.Client
 {
     /// <summary>
-    /// API client is mainly responible for making the HTTP call to the API backend.
+    /// API client is mainly responsible for making the HTTP call to the API backend.
     /// </summary>
     public class ApiClient
     {
@@ -52,7 +50,7 @@ namespace DocRaptor.Client
         /// <param name="basePath">The base path.</param>
         public ApiClient(String basePath = "https://docraptor.com/")
         {
-           if (String.IsNullOrEmpty(basePath))
+            if (String.IsNullOrEmpty(basePath))
                 throw new ArgumentException("basePath cannot be empty");
 
             RestClient = new RestClient(basePath);
@@ -89,24 +87,24 @@ namespace DocRaptor.Client
             var request = new RestRequest(path, method);
 
             // add path parameter, if any
-            foreach(var param in pathParams)
+            foreach (var param in pathParams)
                 request.AddParameter(param.Key, param.Value, ParameterType.UrlSegment);
 
             // add header parameter, if any
-            foreach(var param in headerParams)
+            foreach (var param in headerParams)
                 request.AddHeader(param.Key, param.Value);
 
             // add query parameter, if any
-            foreach(var param in queryParams)
+            foreach (var param in queryParams)
                 request.AddQueryParameter(param.Key, param.Value);
 
             // add form parameter, if any
-            foreach(var param in formParams)
+            foreach (var param in formParams)
                 request.AddParameter(param.Key, param.Value);
 
             // add file parameter, if any
-            foreach(var param in fileParams)
-                request.AddFile(param.Value.Name, param.Value.Writer, param.Value.FileName, param.Value.ContentType);
+            foreach (var param in fileParams)
+                request.AddFile(param.Value.Name, param.Value.Writer, param.Value.FileName, 0, param.Value.ContentType);
 
             if (postBody != null) // http body (model or byte[]) parameter
             {
@@ -147,7 +145,7 @@ namespace DocRaptor.Client
                 pathParams, contentType);
 
             var response = RestClient.Execute(request);
-            return (Object) response;
+            return (Object)response;
         }
 
         /// <summary>
@@ -163,7 +161,7 @@ namespace DocRaptor.Client
         /// <param name="pathParams">Path parameters.</param>
         /// <param name="contentType">Content type.</param>
         /// <returns>The Task instance.</returns>
-        public async System.Threading.Tasks.Task<Object> CallApiAsync(
+        public async Task<Object> CallApiAsync(
             String path, RestSharp.Method method, Dictionary<String, String> queryParams, Object postBody,
             Dictionary<String, String> headerParams, Dictionary<String, String> formParams,
             Dictionary<String, FileParameter> fileParams, Dictionary<String, String> pathParams,
@@ -214,13 +212,13 @@ namespace DocRaptor.Client
                 // Defaults to an ISO 8601, using the known as a Round-trip date/time pattern ("o")
                 // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Anchor_8
                 // For example: 2009-06-15T13:45:30.0000000
-                return ((DateTime)obj).ToString (Configuration.DateTimeFormat);
+                return ((DateTime)obj).ToString(Configuration.DateTimeFormat);
             else if (obj is DateTimeOffset)
                 // Return a formatted date string - Can be customized with Configuration.DateTimeFormat
                 // Defaults to an ISO 8601, using the known as a Round-trip date/time pattern ("o")
                 // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Anchor_8
                 // For example: 2009-06-15T13:45:30.0000000
-                return ((DateTimeOffset)obj).ToString (Configuration.DateTimeFormat);
+                return ((DateTimeOffset)obj).ToString(Configuration.DateTimeFormat);
             else if (obj is IList)
             {
                 var flattenedString = new StringBuilder();
@@ -233,7 +231,7 @@ namespace DocRaptor.Client
                 return flattenedString.ToString();
             }
             else
-                return Convert.ToString (obj);
+                return Convert.ToString(obj);
         }
 
         /// <summary>
@@ -275,7 +273,7 @@ namespace DocRaptor.Client
 
             if (type.Name.StartsWith("System.Nullable`1[[System.DateTime")) // return a datetime object
             {
-                return DateTime.Parse(response.Content,  null, System.Globalization.DateTimeStyles.RoundtripKind);
+                return DateTime.Parse(response.Content, null, System.Globalization.DateTimeStyles.RoundtripKind);
             }
 
             if (type == typeof(String) || type.Name.StartsWith("System.Nullable")) // return primitive type
@@ -377,7 +375,7 @@ namespace DocRaptor.Client
         /// <returns>Byte array</returns>
         public static byte[] ReadAsBytes(Stream input)
         {
-            byte[] buffer = new byte[16*1024];
+            byte[] buffer = new byte[16 * 1024];
             using (MemoryStream ms = new MemoryStream())
             {
                 int read;

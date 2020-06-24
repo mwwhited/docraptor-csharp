@@ -5,3 +5,7 @@ bin/
 *.mdb
 /vendor/Newtonsoft*
 /vendor/RestSharp*
+/.vs
+/src/main/csharp/.vs/DocRaptor/v16
+/src/main/csharp/DocRaptor/.vs/DocRaptor
+/src/main/csharp/DocRaptor/obj
